@@ -1,42 +1,48 @@
 import streamlit as st
 from utils.session import session_setup
+from streamlit_theme import st_theme
 from utils.components import (show_response_count, finish_button, done_button, show_finish_status,
                               add_reaction_buttons, get_input_and_gen_response, comments)
 
 
 def chat_bubble_css():
-    st.markdown("""
+    if st.session_state['current_theme'] == "dark":
+        background_color_user = "#027148"
+        background_color_bot = "#434343"
+    else:
+        background_color_user = "#dcf8c6"
+        background_color_bot = "#f1f0f0"
+
+    st.markdown(f"""
         <style>
-        .chat-container {
+        .chat-container {{
             display: flex;
             flex-direction: column;
             margin-bottom: 10px;
-        }
-        .user-message, .bot-message {
+        }}
+        .user-message, .bot-message {{
             padding: 10px;
             border-radius: 15px;
             max-width: 60%;
             margin: 5px;
             position: relative;
             margin-top: 15px;  /* Staggered positioning for each message */
-        }
-        .user-message {
+        }}
+        .user-message {{
             align-self: flex-end;
-            background-color: #dcf8c6;
-            color: black;
-        }
-        .bot-message {
+            background-color: {background_color_user};
+        }}
+        .bot-message {{
             align-self: flex-start;
-            background-color: #f1f0f0;
-            color: black;
-        }
+            background-color: {background_color_bot};
+        }}
         </style>
     """, unsafe_allow_html=True)
 
 
 st.set_page_config(
     layout='wide',
-    page_title='Llama 3.1 chatbot',
+    page_title='AI chatbot',
     page_icon='🤖'
 )
 
@@ -46,17 +52,18 @@ def main():
     chat_bubble_css()
 
     if st.session_state.get('next_page', False):
-        st.experimental_set_query_params(page="feedback")
+        st.session_state.current_page = "feedback"  # Set the current page in session state
 
-    query_params = st.experimental_get_query_params()
-    if query_params.get("page") == ["feedback"]:
+    current_page = st.session_state.get('current_page', "chat")
+
+    if current_page == "feedback":
         show_feedback_page()
     else:
         show_chat_page()
 
 
 def show_chat_page():
-    st.title('Llama 3.1 chatbot')
+    st.title('AI chatbot')
     introduction = st.session_state['introduction']
     st.info(introduction)
 
@@ -82,15 +89,22 @@ def show_chat_page():
 
 def show_feedback_page():
     st.subheader("Chatbot Responses for Feedback")
-    st.info("""
-    On this page, you can give feedback on the chatbot's responses.
+    st.write("""
+    On this page, you can provide feedback on the chatbot's responses.
     
-    Below, you will see a list of the input / response pairs from your chat. To the right of a response, you can 
-    click **Give feedback** if you want to provide feedback on that response. You can specify the type of 
-    feedback you would like to provide by choosing from any of the categories in the dropdown menu. You can choose more 
-    than one. Then, fill out the comment box with your thoughts on the response.
+    Below, you will see a list of input / response pairs from your chat. Your input is in ***green***, while the 
+    chatbot's response is in ***gray***.
     
-    Press **Submit** at the bottom of the page when you are finished.
+    To the right of a response, you can click **Yes** under **Give feedback?** if you want to provide feedback on that 
+    response, or you can click **No** if not. 
+    
+    If you choose to provide feedback on a response, you can specify the type by choosing from the categories in the 
+    dropdown menu. You can choose more than one. Then, fill out the comment box with your thoughts on the response.
+    
+    You must provide feedback for at least two responses, at which point a **Submit** button will appear at the bottom
+    of the page.
+    
+    Click **Submit** when you are finished, then click **Go to post-survey** to take the post-survey.
     """)
 
     with st.expander("Click to learn what each category means"):
@@ -105,10 +119,10 @@ def show_feedback_page():
         """, unsafe_allow_html=True)
 
     comments()
-    done_button()
+    #done_button()
 
     if 'done_pressed' in st.session_state and st.session_state['done_pressed']:
-        st.success("Comments submitted!")
+        st.success("Comments submitted! Click **Go to post-survey** to start the post-survey.")
 
 
 if __name__ == '__main__':

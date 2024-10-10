@@ -25,7 +25,7 @@ def intro_response():
             },
             {
                 "role": "user",
-                "content": os.getenv("intro_text")
+                "content": os.getenv("intro_text") + " " + st.session_state['system_instruction']
             }
         ],
         "temperature": os.getenv("intro_temp"),
@@ -39,9 +39,12 @@ def intro_response():
 
 
 def request_response(user_input):
-    messages = [{"role": "system", "content": os.getenv("intro_system_instruction")},
-                {"role": "user", "content": os.getenv("intro_text")},
-                {"role": "assistant", "content": st.session_state["introduction"]}]
+    if os.getenv("intro_system_instruction") == "":
+        messages = [{"role": "assistant", "content": st.session_state["introduction"]}]
+    else:
+        messages = [{"role": "system", "content": os.getenv("intro_system_instruction")},
+                    {"role": "user", "content": os.getenv("intro_text")},
+                    {"role": "assistant", "content": st.session_state["introduction"]}]
 
     for IO_pair in st.session_state['chat_history']:
         messages.extend(
@@ -69,10 +72,12 @@ def request_response(user_input):
             },
             {
                 "role": "user",
-                "content": user_input + st.session_state['system_instruction'],
+                "content": user_input + " " + st.session_state['system_instruction'],
             }
         ]
     )
+
+    print(messages)
 
     data = {
         "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
@@ -102,11 +107,11 @@ def get_response(user_input):
         return None
 
     # Preliminary hello input
-    if user_input in ['Hello', 'hello', 'Hello!', 'Hi', 'hi', 'HI', 'Hi!']:
-        return 'Hello! I am the chatbot. What can I do for you today?'
+    #if user_input in ['Hello', 'hello', 'Hello!', 'Hi', 'hi', 'HI', 'Hi!']:
+    #    return 'Hello! I am the chatbot. What can I do for you today?'
 
     # Show the spinner while waiting for the response
-    with st.spinner('Waiting for the chatbot to respond...'):
+    with st.spinner('Waiting for the chatbot to respond... This can take 10-15 seconds.'):
         response = request_response(user_input)
 
     return response
