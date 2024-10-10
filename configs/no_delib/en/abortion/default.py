@@ -4,6 +4,8 @@ import os
 import subprocess
 
 # Setting environment variables
+
+print("HI!")
 os.environ['topic'] = 'abortion'
 
 os.environ['intro_temp'] = '0.7'
