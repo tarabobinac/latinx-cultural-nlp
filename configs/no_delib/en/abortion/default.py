@@ -3,6 +3,8 @@
 import os
 import subprocess
 
+print("HI!")
+
 # Setting environment variables
 os.environ['topic'] = 'abortion'
 
