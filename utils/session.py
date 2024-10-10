@@ -1,5 +1,4 @@
 import streamlit as st
-import openai
 import os
 import string
 import random
