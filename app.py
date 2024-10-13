@@ -49,6 +49,7 @@ st.set_page_config(
 
 def main():
     session_setup()
+    return
     chat_bubble_css()
 
     if st.session_state.get('next_page', False):
