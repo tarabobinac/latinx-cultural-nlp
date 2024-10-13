@@ -22,4 +22,4 @@ os.environ['gen_max_tokens'] = '512'
 os.environ['gen_system_instruction'] = f"You finish your response within {os.environ['gen_max_tokens']} tokens."
 
 # Run the Streamlit app
-subprocess.run(["streamlit", "run", "./app.py"])
+os.system("streamlit run ./app.py")
