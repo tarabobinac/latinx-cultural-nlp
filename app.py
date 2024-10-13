@@ -4,6 +4,7 @@ from streamlit_theme import st_theme
 from utils.components import (show_response_count, finish_button, done_button, show_finish_status,
                               add_reaction_buttons, get_input_and_gen_response, comments)
 
+import configs.no_delib.en.abortion.default
 
 def chat_bubble_css():
     if st.session_state['current_theme'] == "dark":
@@ -48,8 +49,15 @@ st.set_page_config(
 
 
 def main():
+
+    """
+    if delib == "no_delib":
+        if lang == "en":
+            if topic == "abortion":
+                configs.no_delib.en.abortion.default.setup()
+    """
+    configs.no_delib.en.abortion.default.setup()
     session_setup()
-    return
     chat_bubble_css()
 
     if st.session_state.get('next_page', False):
