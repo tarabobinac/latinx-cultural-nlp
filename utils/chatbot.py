@@ -20,17 +20,17 @@ def intro_response():
         "messages": [
             {
                 "role": "system",
-                "content": os.getenv("intro_system_instruction")
+                "content": st.secrets["intro_system_instruction"]
             },
             {
                 "role": "user",
-                "content": os.getenv("intro_text") + " " + st.session_state['system_instruction']
+                "content": st.secrets["intro_text"] + " " + st.session_state['system_instruction']
             }
         ],
-        "temperature": os.getenv("intro_temp"),
-        "top_p": os.getenv("intro_top_p"),
-        "repetition_penalty": os.getenv("intro_rep_pen"),
-        "max_tokens": os.getenv("intro_max_tokens")
+        "temperature": st.secrets["intro_temp"],
+        "top_p": st.secrets["intro_top_p"],
+        "repetition_penalty": st.secrets["intro_rep_pen"],
+        "max_tokens": st.secrets["intro_max_tokens"]
     }
     response = requests.post(url, headers=headers, json=data)
     #print(response.json()['usage']['estimated_cost'])
@@ -38,11 +38,11 @@ def intro_response():
 
 
 def request_response(user_input):
-    if os.getenv("intro_system_instruction") == "":
+    if st.secrets["intro_system_instruction"] == "":
         messages = [{"role": "assistant", "content": st.session_state["introduction"]}]
     else:
-        messages = [{"role": "system", "content": os.getenv("intro_system_instruction")},
-                    {"role": "user", "content": os.getenv("intro_text")},
+        messages = [{"role": "system", "content": st.secrets["intro_system_instruction"]},
+                    {"role": "user", "content": st.secrets["intro_text"]},
                     {"role": "assistant", "content": st.session_state["introduction"]}]
 
     for IO_pair in st.session_state['chat_history']:
