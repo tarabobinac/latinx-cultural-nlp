@@ -51,11 +51,11 @@ def session_setup():
         st.session_state['submitted_to_database'] = False
 
     if 'system_instruction' not in st.session_state:
-        st.session_state['system_instruction'] = os.getenv("gen_system_instruction")
+        st.session_state['system_instruction'] = st.secrets["gen_system_instruction"]
 
     if 'introduction' not in st.session_state:
-        if os.getenv("intro_system_instruction") == "":
-            st.session_state['introduction'] = os.getenv("intro_text")
+        if st.secrets["intro_system_instruction"] == "":
+            st.session_state['introduction'] = st.secrets["intro_text"]
         else:
             with st.spinner('Launching chatbot, this can take up to 20 seconds...'):
                 st.session_state['introduction'] = intro_response()
