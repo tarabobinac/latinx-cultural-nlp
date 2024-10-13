@@ -26,6 +26,8 @@ def get_survey_id():
 
 # Set up the state of this streamlit app session
 def session_setup():
+    st.write("hello")
+    return
     if 'chat_history' not in st.session_state:
         st.session_state['chat_history'] = []
 
